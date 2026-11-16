@@ -3,6 +3,7 @@
 import hashlib
 import uuid
 from pathlib import Path
+from src.processing.cleaner import clean_pages
 
 from src.extraction.docx_extractor import extract_docx
 from src.extraction.file_validator import (
@@ -31,6 +32,7 @@ def load_document(path: str) -> dict:
         pages = extract_pdf(path)
     else:
         pages = extract_docx(path)
+    pages = clean_pages(pages)
 
     total_chars = sum(len(page["text"].strip()) for page in pages)
     if total_chars == 0:
