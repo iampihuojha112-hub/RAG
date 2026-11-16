@@ -1,0 +1,11 @@
+# Dependencies are added module by module.
+# Module 1
+transformers
+torch
+sentence-transformers
+# Module 3:  pymupdf, python-docx
+# Module 5:  chromadb
+# Module 7:  google-genai, python-dotenv
+# Module 9:  fastapi, uvicorn, python-multipart
+# Module 10: streamlit
+# Module 12: pytest
