@@ -1,5 +1,3 @@
-# Wrapper around Sentence Transformers (all-MiniLM-L6-v2).
-# Filled in: Module 2
 from sentence_transformers import SentenceTransformer
 
 from src.config import EMBEDDING_MODEL_NAME
@@ -19,6 +17,9 @@ class Embedder:
     @property
     def max_tokens(self) -> int:
         return self.model.max_seq_length
+
+    def count_tokens(self, text: str) -> int:
+        return len(self.model.tokenizer.encode(text, add_special_tokens=False))
 
     def embed_texts(self, texts: list[str], batch_size: int = 32) -> list[list[float]]:
         if not texts:
