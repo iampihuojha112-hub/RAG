@@ -3,8 +3,9 @@
 transformers
 torch
 sentence-transformers
-# Module 3:  pymupdf, python-docx
-# Module 5:  chromadb
+pymupdf
+python-docx
+chromadb
 # Module 7:  google-genai, python-dotenv
 # Module 9:  fastapi, uvicorn, python-multipart
 # Module 10: streamlit
