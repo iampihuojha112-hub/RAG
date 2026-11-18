@@ -65,3 +65,35 @@ class ChromaStore:
         if count:
             self.collection.delete(where={"document_id": document_id})
         return count
+
+    def query(
+        self,
+        embedding: list[float],
+        n_results: int = 5,
+        document_id: str | None = None,
+    ) -> list[dict]:
+        total = self.count()
+        if total == 0:
+            return []
+
+        kwargs = {}
+        if document_id:
+            kwargs["where"] = {"document_id": document_id}
+
+        result = self.collection.query(
+            query_embeddings=[embedding],
+            n_results=min(n_results, total),
+            **kwargs,
+        )
+
+        hits = []
+        for chunk_id, text, meta, dist in zip(
+            result["ids"][0],
+            result["documents"][0],
+            result["metadatas"][0],
+            result["distances"][0],
+        ):
+            hits.append(
+                {"chunk_id": chunk_id, "text": text, "metadata": meta, "distance": dist}
+            )
+        return hits
