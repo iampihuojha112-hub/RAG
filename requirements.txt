@@ -8,6 +8,7 @@ python-docx
 chromadb
 google-genai
 python-dotenv
+groq
 # Module 9:  fastapi, uvicorn, python-multipart
 # Module 10: streamlit
 # Module 12: pytest
