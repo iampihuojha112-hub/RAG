@@ -6,7 +6,8 @@ sentence-transformers
 pymupdf
 python-docx
 chromadb
-# Module 7:  google-genai, python-dotenv
+google-genai
+python-dotenv
 # Module 9:  fastapi, uvicorn, python-multipart
 # Module 10: streamlit
 # Module 12: pytest
