@@ -97,3 +97,12 @@ class ChromaStore:
                 {"chunk_id": chunk_id, "text": text, "metadata": meta, "distance": dist}
             )
         return hits
+
+    def find_document_by_hash(self, file_hash: str) -> dict | None:
+        found = self.collection.get(
+            where={"file_hash": file_hash}, limit=1, include=["metadatas"]
+        )
+        if not found["ids"]:
+            return None
+        meta = found["metadatas"][0]
+        return {"document_id": meta["document_id"], "filename": meta["filename"]}
