@@ -4,8 +4,16 @@ import logging
 
 from src.embeddings.embedder import Embedder
 from src.extraction.loader import load_document
+from src.llm.citations import extract_cited_numbers
 from src.llm.groq_client import GroqClient
-from src.llm.prompt_builder import NOT_FOUND_MESSAGE, SYSTEM_INSTRUCTION, build_prompt
+from src.config import CHUNK_MAX_TOKENS, CHUNK_OVERLAP_TOKENS
+from src.llm.prompt_builder import (
+    NOT_FOUND_MESSAGE,
+    REWRITE_INSTRUCTION,
+    SYSTEM_INSTRUCTION,
+    build_prompt,
+    build_rewrite_prompt,
+)
 from src.processing.chunker import chunk_document
 from src.retrieval.retriever import Retriever
 from src.vectorstore.chroma_store import ChromaStore
@@ -35,7 +43,12 @@ class RAGPipeline:
                 "chunks": 0,
             }
 
-        chunks = chunk_document(doc, self.embedder.count_tokens)
+        chunks = chunk_document(
+            doc,
+            self.embedder.count_tokens,
+            max_tokens=CHUNK_MAX_TOKENS,
+            overlap_tokens=CHUNK_OVERLAP_TOKENS,
+        )
         if not chunks:
             raise ValueError("No chunks were created from this document.")
 
@@ -55,23 +68,58 @@ class RAGPipeline:
             "chunks": len(chunks),
         }
 
+    def _standalone_question(self, question: str, history: list[dict]) -> str:
+        if not history:
+            return question
+        try:
+            rewritten = self.llm.generate(
+                build_rewrite_prompt(question, history),
+                system_instruction=REWRITE_INSTRUCTION,
+            )
+        except Exception:
+            logger.warning("Question rewrite failed, using the original", exc_info=True)
+            return question
+
+        rewritten = rewritten.strip().strip('"')
+        if not rewritten or len(rewritten) > 300 or "\n" in rewritten:
+            return question
+        return rewritten
+
     def ask(
-        self, question: str, top_k: int | None = None, document_id: str | None = None
+        self,
+        question: str,
+        top_k: int | None = None,
+        document_id: str | None = None,
+        history: list[dict] | None = None,
     ) -> dict:
         question = question.strip()
         if not question:
-            return {"answer": "Please type a question.", "found": False, "sources": []}
+            return {
+                "answer": "Please type a question.",
+                "found": False,
+                "search_query": "",
+                "sources": [],
+            }
 
-        results = self.retriever.search(question, top_k=top_k, document_id=document_id)
+        search_query = self._standalone_question(question, history or [])
+        if search_query != question:
+            logger.info("Question rewritten to: %s", search_query)
+
+        results = self.retriever.search(search_query, top_k=top_k, document_id=document_id)
         relevant = [r for r in results if r["relevant"]]
         logger.info("Question retrieved %d chunks, %d relevant", len(results), len(relevant))
 
         if not relevant:
-            return {"answer": NOT_FOUND_MESSAGE, "found": False, "sources": []}
+            return {
+                "answer": NOT_FOUND_MESSAGE,
+                "found": False,
+                "search_query": search_query,
+                "sources": [],
+            }
 
-        prompt = build_prompt(question, relevant)
-        # The prompt and SYSTEM_INSTRUCTION go to Groq through generate()
+        prompt = build_prompt(search_query, relevant)
         answer = self.llm.generate(prompt, system_instruction=SYSTEM_INSTRUCTION)
+        cited = extract_cited_numbers(answer)
 
         sources = [
             {
@@ -81,10 +129,16 @@ class RAGPipeline:
                 "chunk_index": r["chunk_index"],
                 "distance": r["distance"],
                 "text": r["text"],
+                "cited": number in cited,
             }
             for number, r in enumerate(relevant, start=1)
         ]
-        return {"answer": answer, "found": True, "sources": sources}
+        return {
+            "answer": answer,
+            "found": True,
+            "search_query": search_query,
+            "sources": sources,
+        }
 
     def list_documents(self) -> list[dict]:
         return self.store.list_documents()

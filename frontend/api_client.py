@@ -46,9 +46,14 @@ def upload_file(name: str, data: bytes, content_type: str) -> dict:
 
 
 def ask_question(
-    question: str, document_id: str | None = None, top_k: int | None = None
+    question: str,
+    document_id: str | None = None,
+    top_k: int | None = None,
+    history: list[dict] | None = None,
 ) -> dict:
     body = {"question": question}
+    if history:
+        body["history"] = history
     if document_id:
         body["document_id"] = document_id
     if top_k:

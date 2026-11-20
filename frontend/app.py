@@ -1,5 +1,3 @@
-# Streamlit UI: upload panel, chat window, citations.
-# Filled in: Module 10
 import streamlit as st
 
 from api_client import (
@@ -24,10 +22,17 @@ if "flash" not in st.session_state:
 def render_sources(sources: list[dict]) -> None:
     if not sources:
         return
-    with st.expander(f"Sources ({len(sources)})"):
+    cited_count = sum(1 for s in sources if s.get("cited"))
+    label = f"Sources ({cited_count} cited, {len(sources) - cited_count} other)"
+    with st.expander(label):
         for s in sources:
             page = f", page {s['page_number']}" if s["page_number"] > 0 else ""
-            st.markdown(f"**[{s['number']}]** {s['filename']}{page}")
+            match = round((1 - s["distance"]) * 100)
+            tag = "cited" if s.get("cited") else "retrieved, not cited"
+            st.markdown(
+                f"**[{s['number']}] {s['filename']}{page}** · match {match}% · _{tag}_"
+            )
+            st.text(s["text"])
 
 
 st.title("📄 Chat with your documents")
@@ -114,11 +119,17 @@ with st.sidebar:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+        if message.get("search_query"):
+            st.caption(f"Searched for: {message['search_query']}")
         render_sources(message.get("sources", []))
 
 question = st.chat_input("Ask a question about your documents")
 
 if question:
+    history = [
+        {"role": m["role"], "content": m["content"]}
+        for m in st.session_state.messages[-6:]
+    ]
     st.session_state.messages.append({"role": "user", "content": question})
     with st.chat_message("user"):
         st.markdown(question)
@@ -126,14 +137,22 @@ if question:
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             try:
-                result = ask_question(question, document_id=scope)
+                result = ask_question(question, document_id=scope, history=history)
             except ApiError as error:
-                answer, sources = f"⚠️ {error}", []
+                answer, sources, search_query = f"⚠️ {error}", [], ""
             else:
                 answer, sources = result["answer"], result["sources"]
+                search_query = result["search_query"]
         st.markdown(answer)
+        if search_query and search_query != question:
+            st.caption(f"Searched for: {search_query}")
         render_sources(sources)
 
     st.session_state.messages.append(
-        {"role": "assistant", "content": answer, "sources": sources}
+        {
+            "role": "assistant",
+            "content": answer,
+            "sources": sources,
+            "search_query": search_query if search_query != question else "",
+        }
     )

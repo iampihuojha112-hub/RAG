@@ -78,9 +78,13 @@ def upload(
 @app.post("/ask", response_model=AskResponse)
 def ask(payload: AskRequest, pipeline: RAGPipeline = Depends(get_pipeline)):
     try:
-        return pipeline.ask(
-            payload.question, top_k=payload.top_k, document_id=payload.document_id
+                return pipeline.ask(
+            payload.question,
+            top_k=payload.top_k,
+            document_id=payload.document_id,
+            history=[m.model_dump() for m in payload.history],
         )
+        
     except Exception:
         logger.exception("Answering failed")
         raise HTTPException(
