@@ -12,5 +12,6 @@ groq
 fastapi
 uvicorn
 python-multipart
-# Module 10: streamlit
+streamlit
+requests
 # Module 12: pytest
