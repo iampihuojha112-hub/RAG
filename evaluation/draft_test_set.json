@@ -130,7 +130,7 @@
         "the GitHub page"
       ],
       "answer_keywords": [
-        "GitHub"
+        "Git log"
       ],
       "answerable": true,
       "source_page": 7
@@ -159,13 +159,9 @@
     },
     {
       "question": "How does Mercurial internally store its version history?",
-      "evidence": [
-        "origin-that is the default"
-      ],
-      "answer_keywords": [
-        "origin"
-      ],
-      "answerable": true,
+      "evidence": [],
+      "answer_keywords": [],
+      "answerable": false,
       "source_page": 16
     },
     {

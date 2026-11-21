@@ -9,7 +9,7 @@ def _normalize(line: str) -> str:
 
 
 def remove_repeated_lines(
-    pages: list[dict], edge_lines: int = 4, min_share: float = 0.5
+    pages: list[dict], edge_lines: int = 2, min_share: float = 0.5
 ) -> list[dict]:
     if len(pages) < 3:
         return pages

@@ -48,7 +48,11 @@ class FakeLLM:
         self.answer_calls.append(prompt)
         return "Git is distributed [1]."
 
-
+@pytest.fixture(autouse=True)
+def plain_vector_search(monkeypatch):
+    """Tests must not depend on the RETRIEVAL_MODE you chose in config.py."""
+    monkeypatch.setattr("src.pipeline.rag_pipeline.RETRIEVAL_MODE", "vector")
+    
 @pytest.fixture
 def embedder():
     return FakeEmbedder()
