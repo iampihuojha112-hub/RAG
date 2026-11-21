@@ -1,0 +1,180 @@
+{
+  "documents": [
+    "data/raw/NOTES2.pdf"
+  ],
+  "questions": [
+    {
+      "question": "In Git, what dual role can each contributor serve within a project's workflow?",
+      "evidence": [
+        "both a node and a hub"
+      ],
+      "answer_keywords": [
+        "node"
+      ],
+      "answerable": true,
+      "source_page": 28
+    },
+    {
+      "question": "What critical weakness does a central hub create for a version control system?",
+      "evidence": [
+        "single point of failure"
+      ],
+      "answer_keywords": [
+        "failure"
+      ],
+      "answerable": true,
+      "source_page": 2
+    },
+    {
+      "question": "Where does Git store its metadata and object database for a project?",
+      "evidence": [
+        "the Git directory is where"
+      ],
+      "answer_keywords": [
+        "Git"
+      ],
+      "answerable": true,
+      "source_page": 5
+    },
+    {
+      "question": "Which type of system records file revisions using an internal database to prevent manual copying mistakes?",
+      "evidence": [
+        "simple database that kept"
+      ],
+      "answer_keywords": [
+        "local"
+      ],
+      "answerable": true,
+      "source_page": 1
+    },
+    {
+      "question": "Which Git command retrieves data to the local repository without automatically merging it?",
+      "evidence": [
+        "git fetch command pulls"
+      ],
+      "answer_keywords": [
+        "fetch"
+      ],
+      "answerable": true,
+      "source_page": 18
+    },
+    {
+      "question": "Which git command flag displays a list of changed files together with the number of lines added and removed for each commit?",
+      "evidence": [
+        "the --stat option"
+      ],
+      "answer_keywords": [
+        "stat"
+      ],
+      "answerable": true,
+      "source_page": 12
+    },
+    {
+      "question": "What tool can display the staged files after adding everything by mistake?",
+      "evidence": [
+        "git status command"
+      ],
+      "answer_keywords": [
+        "status"
+      ],
+      "answerable": true,
+      "source_page": 14
+    },
+    {
+      "question": "What Git capability lets each developer keep their own repository while still being able to work with others?",
+      "evidence": [
+        "multiple remote repositories"
+      ],
+      "answer_keywords": [
+        "remote"
+      ],
+      "answerable": true,
+      "source_page": 29
+    },
+    {
+      "question": "If a configuration key is defined in multiple files, which value is ultimately applied?",
+      "evidence": [
+        "uses the last value"
+      ],
+      "answer_keywords": [
+        "last"
+      ],
+      "answerable": true,
+      "source_page": 9
+    },
+    {
+      "question": "What were the intended characteristics of the version‑control system introduced in 2005?",
+      "evidence": [
+        "able to handle large projects"
+      ],
+      "answer_keywords": [
+        "speed"
+      ],
+      "answerable": true,
+      "source_page": 3
+    },
+    {
+      "question": "What should you do when an urgent fix is needed while developing a new story?",
+      "evidence": [
+        "Switch to your production branch"
+      ],
+      "answer_keywords": [
+        "production"
+      ],
+      "answerable": true,
+      "source_page": 20
+    },
+    {
+      "question": "What command displays the commit history in Git?",
+      "evidence": [
+        "the GitHub page"
+      ],
+      "answer_keywords": [
+        "GitHub"
+      ],
+      "answerable": true,
+      "source_page": 7
+    },
+    {
+      "question": "What command can you run to list files that remain unresolved after a merge?",
+      "evidence": [
+        "run git status"
+      ],
+      "answer_keywords": [
+        "git"
+      ],
+      "answerable": true,
+      "source_page": 26
+    },
+    {
+      "question": "Which command sends a local feature branch to the remote repository?",
+      "evidence": [
+        "git push origin <branch-name>"
+      ],
+      "answer_keywords": [
+        "push"
+      ],
+      "answerable": true,
+      "source_page": 32
+    },
+    {
+      "question": "How does Mercurial internally store its version history?",
+      "evidence": [
+        "origin-that is the default"
+      ],
+      "answer_keywords": [
+        "origin"
+      ],
+      "answerable": true,
+      "source_page": 16
+    },
+    {
+      "question": "How does GitHub Actions execute automated deployment workflows?",
+      "answerable": false
+    },
+    {
+      "question": "How does Jenkins implement continuous integration pipelines?",
+      "answerable": false
+    }
+  ]
+}

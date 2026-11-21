@@ -1,12 +1,10 @@
-# ingest(file) and ask(question) tying all modules together.
-# Filled in: Module 8
 import logging
 
+from src.config import CHUNK_MAX_TOKENS, CHUNK_OVERLAP_TOKENS, RETRIEVAL_MODE
 from src.embeddings.embedder import Embedder
 from src.extraction.loader import load_document
 from src.llm.citations import extract_cited_numbers
 from src.llm.groq_client import GroqClient
-from src.config import CHUNK_MAX_TOKENS, CHUNK_OVERLAP_TOKENS
 from src.llm.prompt_builder import (
     NOT_FOUND_MESSAGE,
     REWRITE_INSTRUCTION,
@@ -15,7 +13,7 @@ from src.llm.prompt_builder import (
     build_rewrite_prompt,
 )
 from src.processing.chunker import chunk_document
-from src.retrieval.retriever import Retriever
+from src.retrieval.factory import make_retriever
 from src.vectorstore.chroma_store import ChromaStore
 
 logger = logging.getLogger(__name__)
@@ -28,8 +26,20 @@ class RAGPipeline:
         self.embedder = embedder or Embedder()
         self.store = store or ChromaStore()
         self.llm = llm or GroqClient()
-        self.retriever = Retriever(self.embedder, self.store)
+        self._check_chunk_size()
+        self.retriever = make_retriever(RETRIEVAL_MODE, self.embedder, self.store)
 
+    def _check_chunk_size(self) -> None:
+        limit = getattr(self.embedder, "max_tokens", None)
+        if limit is None:
+            return
+        prefix = getattr(self.embedder, "document_prefix", "")
+        prefix_tokens = self.embedder.count_tokens(prefix) if prefix else 0
+        if CHUNK_MAX_TOKENS + prefix_tokens + 2 > limit:
+            raise ValueError(
+                f"CHUNK_MAX_TOKENS ({CHUNK_MAX_TOKENS}) is too big for this embedding "
+                f"model, which reads at most {limit} tokens. Lower it in config.py."
+            )
     def ingest(self, file_path: str) -> dict:
         doc = load_document(file_path)
 
