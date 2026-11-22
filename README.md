@@ -338,8 +338,5 @@ Answer check on 14 answerable and 3 unanswerable questions: all 14 answerable qu
 - Docker and cloud deployment
 - Evaluation on larger and more varied document sets
 
-## License
-<< Add a LICENSE file (for example MIT) and name it here. >>
-
 ## Author
 << Pihu Ojha >>: [GitHub](https://github.com/iampihuojha112-hub)
