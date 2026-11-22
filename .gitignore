@@ -1,6 +1,10 @@
+
 .venv/
 .env
 __pycache__/
-data/chroma_db/
 *.pyc
 .pytest_cache/
+data/chroma_db/
+data/raw/*
+!data/raw/.gitkeep
+evaluation/draft_test_set.json
