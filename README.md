@@ -9,11 +9,6 @@ Upload PDF or Word documents, ask questions in plain language, and get answers t
 
 I built this step by step, **without LangChain**, to understand every part of a Retrieval-Augmented Generation (RAG) system: extraction, chunking, embeddings, vector search, reranking, prompting, citations and evaluation.
 
-<!-- << Add a screenshot of the chat with the Sources box open:
-![App screenshot](docs/screenshots/chat.png) -->
-
----
-
 ## Why RAG?
 
 A language model doesn't know what is in your private documents, and it can give confident answers that aren't supported by anything. RAG fixes this: the app first **retrieves** the relevant passages from your documents, then gives them to the model as context. The model's weights never change. It only sees better input.
@@ -258,7 +253,7 @@ All settings live in `src/config.py`.
 | `RETRIEVAL_MODE` | `vector`, `hybrid`, `vector+rerank`, `hybrid+rerank` | `vector+rerank` |
 | `GROQ_MODEL` | Model for answers | `openai/gpt-oss-120b` |
 
-**Re-upload after changes.** If you change the embedding model or the chunk settings, delete and re-upload your documents. Each embedding model uses its own collection, and `MAX_DISTANCE` must be tuned again for every model, because different models use different distance scales.
+**Re-upload after changes.** Each embedding model uses its own collection, and `MAX_DISTANCE` must be tuned again for every model, because different models use different distance scales.
 
 ---
 
@@ -269,7 +264,7 @@ python -m pytest -q
 ```
 The tests use fake embedding and LLM objects, so they run in seconds, offline, and never touch your real database. They cover chunking, cleaning, file validation, duplicate detection, deletion, retrieval, reranking, citations, follow-up rewriting, and the API (including bad uploads and invalid input).
 
-Result of my last run: `<< paste the line your own run prints, for example "89 passed" >>`
+Result of my last run: `"85 passed" >>`
 
 ---
 
@@ -347,4 +342,4 @@ Answer check on 14 answerable and 3 unanswerable questions: all 14 answerable qu
 << Add a LICENSE file (for example MIT) and name it here. >>
 
 ## Author
-<< Your name >>: [GitHub](https://github.com/<your-username>)
+<< Pihu Ojha >>: [GitHub](https://github.com/iampihuojha112-hub)
